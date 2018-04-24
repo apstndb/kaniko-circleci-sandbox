@@ -5,6 +5,7 @@ jobs:
       - image: debian:stretch
     steps:
       - checkout
+      - setup_remote_docker
       - run:
           name: Greeting
           command: echo Hello, world.
