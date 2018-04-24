@@ -8,10 +8,27 @@ jobs:
       - setup_remote_docker
       - run:
           name: Greeting
-          command: echo Hello, world.
+          command: docker run -it --rm alpine echo hoge
+      - run:
+          name: Print the Current Time
+          command: date
+  kaniko:
+    docker:
+      - image: gcr.io/apstndb-sandbox/kaniko:0.0.1
+        entrypoint: /bin/sh
+        auth:
+          username: _json_key
+          password: $GOOGLE_SERVICE_KEY
+    steps:
+      - checkout
       - run:
           name: Greeting
-          command: docker run -it --rm alpine echo hoge
+          command: echo "$GOOGLE_SERVICE_KEY" > keys.json
+      - run:
+          name: Greeting
+          command: executor -f Dockerfile --destination=gcr.io/apstndb-sandbox/echo:hoge
+          env:
+              GOOGLE_APPLICATION_CREDENTIALS: keys.json
       - run:
           name: Print the Current Time
           command: date
